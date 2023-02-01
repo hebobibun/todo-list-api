@@ -3,6 +3,7 @@ package config
 import (
 	"fmt"
 	"log"
+	"todo-api/activity/data"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -18,4 +19,8 @@ func InitDB(ac AppConfig) *gorm.DB {
 	}
 
 	return db
+}
+
+func Migrate(db *gorm.DB) {
+	db.AutoMigrate(data.Activity{})
 }
