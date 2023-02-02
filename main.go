@@ -38,6 +38,9 @@ func main() {
 	todo := e.Group("/todo-items")
 
 	todo.POST("", todoHdl.Create())
+	todo.GET("/:id", todoHdl.GetOne())
+	todo.PATCH("/:id", todoHdl.Update())
+	todo.DELETE("/:id", todoHdl.Delete())
 
 	if err := e.Start(":3030"); err != nil {
 		log.Println(err.Error())
