@@ -9,7 +9,7 @@ import (
 type Todo struct {
 	gorm.Model
 	Title           string
-	IsActive        bool
+	IsActive        bool `gorm:"default:1"`
 	Priority        string
 	ActivityGroupID uint
 }
@@ -35,6 +35,8 @@ func ToCores(data Todo) todo.Core {
 		IsActive:        data.IsActive,
 		Priority:        data.Priority,
 		ActivityGroupID: data.ActivityGroupID,
+		CreatedAt:       data.CreatedAt,
+		UpdatedAt:       data.UpdatedAt,
 	}
 }
 
