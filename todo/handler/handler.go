@@ -77,6 +77,33 @@ func (h *todoHandler) GetOne() echo.HandlerFunc {
 	}
 }
 
+func (h *todoHandler) Update() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		id, err := strconv.Atoi(c.Param("id"))
+		if err != nil {
+			response := helper.APIResponseNoData("Error", "Error")
+			return c.JSON(http.StatusNotFound, response)
+		}
+
+		input := TodoUpdateRequest{}
+
+		if err := c.Bind(&input); err != nil {
+			response := helper.APIResponseNoData("Bad Request", "Bad request")
+			return c.JSON(http.StatusBadRequest, response)
+		}
+
+		res, err := h.srv.Update(uint(id), *ToCore(input))
+		if err != nil {
+			msg := fmt.Sprintf("Todo with ID %d Not Found", id)
+			response := helper.APIResponseNoData("Not Found", msg)
+			return c.JSON(http.StatusInternalServerError, response)
+		}
+
+		response := helper.APIResponse("Success", "Success", ToResponse(res))
+		return c.JSON(http.StatusOK, response)
+	}
+}
+
 func (h *todoHandler) Delete() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		id, err := strconv.Atoi(c.Param("id"))

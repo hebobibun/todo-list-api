@@ -42,6 +42,15 @@ func (s *todoService) GetOne(id uint) (todo.Core, error) {
 	return res, nil
 }
 
+func (s *todoService) Update(id uint, updatedTodo todo.Core) (todo.Core, error) {
+	res, err := s.qry.Update(id, updatedTodo)
+	if err != nil {
+		return updatedTodo, err
+	}
+
+	return res, nil
+}
+
 func (s *todoService) Delete(id uint) error {
 	err := s.qry.Delete(id)
 	if err != nil {

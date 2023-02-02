@@ -8,6 +8,12 @@ type TodoRequest struct {
 	ActivityGroupID uint   `json:"activity_group_id"`
 }
 
+type TodoUpdateRequest struct {
+	Title    string `json:"title"`
+	Priority string `json:"priority"`
+	IsActive bool   `json:"is_active"`
+}
+
 func ToCore(data interface{}) *todo.Core {
 	res := todo.Core{}
 
@@ -17,6 +23,11 @@ func ToCore(data interface{}) *todo.Core {
 		res.Title = cnv.Title
 		res.Priority = cnv.Priority
 		res.ActivityGroupID = cnv.ActivityGroupID
+	case TodoUpdateRequest:
+		cnv := data.(TodoUpdateRequest)
+		res.Title = cnv.Title
+		res.Priority = cnv.Priority
+		res.IsActive = cnv.IsActive
 	default:
 		return nil
 	}
