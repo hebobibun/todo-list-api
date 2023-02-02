@@ -36,8 +36,6 @@ func (h *todoHandler) Create() echo.HandlerFunc {
 			fmt.Println(err.Error())
 			if strings.Contains(err.Error(), "Title") {
 				msg = "title cannot be null"
-			} else if strings.Contains(err.Error(), "Priority") {
-				msg = "priority cannot be null"
 			} else if strings.Contains(err.Error(), "Activity") {
 				msg = "activity_group_id cannot be null"
 			} else {
