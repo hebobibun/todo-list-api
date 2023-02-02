@@ -39,7 +39,7 @@ func (h *todoHandler) Create() echo.HandlerFunc {
 			} else if strings.Contains(err.Error(), "Priority") {
 				msg = "priority cannot be null"
 			} else if strings.Contains(err.Error(), "Activity") {
-				msg = "activity group id cannot be null"
+				msg = "activity_group_id cannot be null"
 			} else {
 				msg = "request body cannot be null"
 			}
@@ -144,7 +144,7 @@ func (h *todoHandler) Delete() echo.HandlerFunc {
 		err = h.srv.Delete(uint(id))
 		if err != nil {
 			msg := fmt.Sprintf("Todo with ID %d Not Found", id)
-			response := helper.APIResponseNoData("Not found", msg)
+			response := helper.APIResponseNoData("Not Found", msg)
 			return c.JSON(http.StatusNotFound, response)
 		}
 
