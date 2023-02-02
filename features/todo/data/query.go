@@ -4,7 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"log"
-	"todo-api/todo"
+	"todo-api/features/todo"
 
 	"gorm.io/gorm"
 )

@@ -1,8 +1,8 @@
 package service
 
 import (
+	"todo-api/features/todo"
 	"todo-api/helper"
-	"todo-api/todo"
 
 	"github.com/go-playground/validator"
 )

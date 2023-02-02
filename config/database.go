@@ -3,8 +3,8 @@ package config
 import (
 	"fmt"
 	"log"
-	act "todo-api/activity/data"
-	todo "todo-api/todo/data"
+	act "todo-api/features/activity/data"
+	todo "todo-api/features/todo/data"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"

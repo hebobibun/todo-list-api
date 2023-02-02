@@ -1,6 +1,6 @@
 package handler
 
-import "todo-api/todo"
+import "todo-api/features/todo"
 
 type TodoRequest struct {
 	Title           string `validate:"required" json:"title"`

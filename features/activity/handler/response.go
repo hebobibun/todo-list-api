@@ -2,7 +2,7 @@ package handler
 
 import (
 	"time"
-	"todo-api/activity"
+	"todo-api/features/activity"
 )
 
 type ActivityResponse struct {
