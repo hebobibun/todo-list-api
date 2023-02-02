@@ -19,6 +19,9 @@ type ResponseNoData struct {
 	Message string `json:"message"`
 }
 
+type NoData struct {
+}
+
 func APIResponse(status string, message string, data interface{}) Response {
 	res := Response{
 		Message: message,

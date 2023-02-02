@@ -36,8 +36,10 @@ func (h *todoHandler) Create() echo.HandlerFunc {
 			fmt.Println(err.Error())
 			if strings.Contains(err.Error(), "Title") {
 				msg = "title cannot be null"
-			} else if strings.Contains(err.Error(), "Email") {
-				msg = "email cannot be null"
+			} else if strings.Contains(err.Error(), "Priority") {
+				msg = "priority cannot be null"
+			} else if strings.Contains(err.Error(), "Activity") {
+				msg = "activity group id cannot be null"
 			} else {
 				msg = "request body cannot be null"
 			}
@@ -69,7 +71,7 @@ func (h *todoHandler) GetOne() echo.HandlerFunc {
 		if err != nil {
 			msg := fmt.Sprintf("Todo with ID %d Not Found", id)
 			response := helper.APIResponseNoData("Not Found", msg)
-			return c.JSON(http.StatusInternalServerError, response)
+			return c.JSON(http.StatusNotFound, response)
 		}
 
 		response := helper.APIResponse("Success", "Success", ToResponse(res))
@@ -87,7 +89,7 @@ func (h *todoHandler) GetAll() echo.HandlerFunc {
 			id, err := strconv.Atoi(actGroupID)
 			if err != nil {
 				response := helper.APIResponseNoData("Bad Request", "Bad Request")
-				return c.JSON(http.StatusNotFound, response)
+				return c.JSON(http.StatusBadRequest, response)
 			}
 
 			actID = id
@@ -109,7 +111,7 @@ func (h *todoHandler) Update() echo.HandlerFunc {
 		id, err := strconv.Atoi(c.Param("id"))
 		if err != nil {
 			response := helper.APIResponseNoData("Error", "Error")
-			return c.JSON(http.StatusNotFound, response)
+			return c.JSON(http.StatusBadRequest, response)
 		}
 
 		input := TodoUpdateRequest{}
@@ -123,7 +125,7 @@ func (h *todoHandler) Update() echo.HandlerFunc {
 		if err != nil {
 			msg := fmt.Sprintf("Todo with ID %d Not Found", id)
 			response := helper.APIResponseNoData("Not Found", msg)
-			return c.JSON(http.StatusInternalServerError, response)
+			return c.JSON(http.StatusNotFound, response)
 		}
 
 		response := helper.APIResponse("Success", "Success", ToResponse(res))
@@ -136,17 +138,17 @@ func (h *todoHandler) Delete() echo.HandlerFunc {
 		id, err := strconv.Atoi(c.Param("id"))
 		if err != nil {
 			response := helper.APIResponseNoData("Error", "Error")
-			return c.JSON(http.StatusNotFound, response)
+			return c.JSON(http.StatusBadRequest, response)
 		}
 
 		err = h.srv.Delete(uint(id))
 		if err != nil {
 			msg := fmt.Sprintf("Todo with ID %d Not Found", id)
 			response := helper.APIResponseNoData("Not found", msg)
-			return c.JSON(http.StatusInternalServerError, response)
+			return c.JSON(http.StatusNotFound, response)
 		}
 
-		response := helper.APIResponseNoData("Success", "Success")
+		response := helper.APIResponse("Success", "Success", helper.NoData{})
 		return c.JSON(http.StatusOK, response)
 	}
 }

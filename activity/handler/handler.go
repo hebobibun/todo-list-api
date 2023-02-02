@@ -62,14 +62,14 @@ func (h *actHandler) GetOne() echo.HandlerFunc {
 		id, err := strconv.Atoi(c.Param("id"))
 		if err != nil {
 			response := helper.APIResponseNoData("Error", "Error")
-			return c.JSON(http.StatusNotFound, response)
+			return c.JSON(http.StatusBadRequest, response)
 		}
 
 		res, err := h.srv.GetOne(uint(id))
 		if err != nil {
 			msg := fmt.Sprintf("Activity with ID %d Not Found", id)
 			response := helper.APIResponseNoData("Not Found", msg)
-			return c.JSON(http.StatusInternalServerError, response)
+			return c.JSON(http.StatusNotFound, response)
 		}
 
 		response := helper.APIResponse("Success", "Success", ToResponse(res))
@@ -95,17 +95,17 @@ func (h *actHandler) Delete() echo.HandlerFunc {
 		id, err := strconv.Atoi(c.Param("id"))
 		if err != nil {
 			response := helper.APIResponseNoData("Error", "Error")
-			return c.JSON(http.StatusNotFound, response)
+			return c.JSON(http.StatusBadRequest, response)
 		}
 
 		err = h.srv.Delete(uint(id))
 		if err != nil {
 			msg := fmt.Sprintf("Activity with ID %d Not Found", id)
 			response := helper.APIResponseNoData("Not found", msg)
-			return c.JSON(http.StatusInternalServerError, response)
+			return c.JSON(http.StatusNotFound, response)
 		}
 
-		response := helper.APIResponseNoData("Success", "Success")
+		response := helper.APIResponse("Success", "Success", helper.NoData{})
 		return c.JSON(http.StatusOK, response)
 	}
 }
@@ -135,7 +135,7 @@ func (h *actHandler) Update() echo.HandlerFunc {
 		if err != nil {
 			msg := fmt.Sprintf("Activity with ID %d Not Found", id)
 			response := helper.APIResponseNoData("Not found", msg)
-			return c.JSON(http.StatusInternalServerError, response)
+			return c.JSON(http.StatusNotFound, response)
 		}
 
 		response := helper.APIResponse("Success", "Success", ToResponse(res))
