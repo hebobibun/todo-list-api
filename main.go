@@ -25,7 +25,7 @@ func main() {
 	act.POST("", actHdl.Create())
 	act.GET("", actHdl.GetAll())
 	act.GET("/:id", actHdl.GetOne())
-	act.PATCH("/:id", actHdl.GetOne())
+	act.PATCH("/:id", actHdl.Update())
 	act.DELETE("/:id", actHdl.Delete())
 
 	if err := e.Start(":3030"); err != nil {
