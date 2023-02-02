@@ -32,3 +32,21 @@ func (s *todoService) Create(newTodo todo.Core) (todo.Core, error) {
 
 	return res, nil
 }
+
+func (s *todoService) GetOne(id uint) (todo.Core, error) {
+	res, err := s.qry.GetOne(id)
+	if err != nil {
+		return res, err
+	}
+
+	return res, nil
+}
+
+func (s *todoService) Delete(id uint) error {
+	err := s.qry.Delete(id)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

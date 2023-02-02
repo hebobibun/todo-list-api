@@ -3,6 +3,7 @@ package handler
 import (
 	"fmt"
 	"net/http"
+	"strconv"
 	"strings"
 	"todo-api/helper"
 	"todo-api/todo"
@@ -53,5 +54,45 @@ func (h *todoHandler) Create() echo.HandlerFunc {
 
 		response := helper.APIResponse("Success", "Success", ToResponse(res))
 		return c.JSON(http.StatusCreated, response)
+	}
+}
+
+func (h *todoHandler) GetOne() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		id, err := strconv.Atoi(c.Param("id"))
+		if err != nil {
+			response := helper.APIResponseNoData("Error", "Error")
+			return c.JSON(http.StatusNotFound, response)
+		}
+
+		res, err := h.srv.GetOne(uint(id))
+		if err != nil {
+			msg := fmt.Sprintf("Todo with ID %d Not Found", id)
+			response := helper.APIResponseNoData("Not Found", msg)
+			return c.JSON(http.StatusInternalServerError, response)
+		}
+
+		response := helper.APIResponse("Success", "Success", ToResponse(res))
+		return c.JSON(http.StatusOK, response)
+	}
+}
+
+func (h *todoHandler) Delete() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		id, err := strconv.Atoi(c.Param("id"))
+		if err != nil {
+			response := helper.APIResponseNoData("Error", "Error")
+			return c.JSON(http.StatusNotFound, response)
+		}
+
+		err = h.srv.Delete(uint(id))
+		if err != nil {
+			msg := fmt.Sprintf("Todo with ID %d Not Found", id)
+			response := helper.APIResponseNoData("Not found", msg)
+			return c.JSON(http.StatusInternalServerError, response)
+		}
+
+		response := helper.APIResponseNoData("Success", "Success")
+		return c.JSON(http.StatusOK, response)
 	}
 }

@@ -18,11 +18,17 @@ type Core struct {
 
 type TodoHandler interface {
 	Create() echo.HandlerFunc
+	GetOne() echo.HandlerFunc
+	Delete() echo.HandlerFunc
 }
 type TodoService interface {
 	Create(newTodo Core) (Core, error)
+	GetOne(id uint) (Core, error)
+	Delete(id uint) error
 }
 
 type TodoData interface {
 	Create(newTodo Core) (Core, error)
+	GetOne(id uint) (Core, error)
+	Delete(id uint) error
 }
