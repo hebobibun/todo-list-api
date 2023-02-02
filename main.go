@@ -23,6 +23,8 @@ func main() {
 	act := e.Group("/activity-groups")
 
 	act.POST("", actHdl.Create())
+	act.GET("", actHdl.GetAll())
+	act.GET("/:id", actHdl.GetOne())
 
 	if err := e.Start(":3030"); err != nil {
 		log.Println(err.Error())

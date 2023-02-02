@@ -32,3 +32,21 @@ func (s *actService) Create(newActivity activity.Core) (activity.Core, error) {
 
 	return res, nil
 }
+
+func (s *actService) GetOne(id uint) (activity.Core, error) {
+	res, err := s.qry.GetOne(id)
+	if err != nil {
+		return res, err
+	}
+
+	return res, nil
+}
+
+func (s *actService) GetAll() ([]activity.Core, error) {
+	res, err := s.qry.GetAll()
+	if err != nil {
+		return res, err
+	}
+
+	return res, nil
+}

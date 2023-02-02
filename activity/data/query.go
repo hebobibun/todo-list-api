@@ -26,3 +26,25 @@ func (q *activityQuery) Create(newActivity activity.Core) (activity.Core, error)
 
 	return ToCores(activity), nil
 }
+
+func (q *activityQuery) GetOne(id uint) (activity.Core, error) {
+	act := Activity{}
+
+	err := q.db.Where("id = ?", id).First(&act).Error
+	if err != nil {
+		return activity.Core{}, err
+	}
+
+	return ToCores(act), nil
+}
+
+func (q *activityQuery) GetAll() ([]activity.Core, error) {
+	allAct := []Activity{}
+
+	err := q.db.Find(&allAct).Error
+	if err != nil {
+		return []activity.Core{}, err
+	}
+
+	return ToCoresArr(allAct), nil
+}

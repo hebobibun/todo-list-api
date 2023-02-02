@@ -1,7 +1,9 @@
 package handler
 
 import (
+	"fmt"
 	"net/http"
+	"strconv"
 	"todo-api/activity"
 	"todo-api/helper"
 
@@ -33,7 +35,39 @@ func (h *acthandler) Create() echo.HandlerFunc {
 		}
 
 		response := helper.APIResponse("Success", "Success", ToResponse(res))
-
 		return c.JSON(http.StatusCreated, response)
+	}
+}
+
+func (h *acthandler) GetOne() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		id, err := strconv.Atoi(c.Param("id"))
+		if err != nil {
+			msg := fmt.Sprintf("Activity with ID %d Not Found", id)
+			response := helper.APIResponse("Not Found", msg, nil)
+			return c.JSON(http.StatusNotFound, response)
+		}
+
+		res, err := h.srv.GetOne(uint(id))
+		if err != nil {
+			response := helper.APIResponse("Error", "Error", nil)
+			return c.JSON(http.StatusInternalServerError, response)
+		}
+
+		response := helper.APIResponse("Success", "Success", ToResponse(res))
+		return c.JSON(http.StatusOK, response)
+	}
+}
+
+func (h *acthandler) GetAll() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		res, err := h.srv.GetAll()
+		if err != nil {
+			response := helper.APIResponse("Error", "Error", nil)
+			return c.JSON(http.StatusInternalServerError, response)
+		}
+
+		response := helper.APIResponse("Success", "Success", ToResponseArr(res))
+		return c.JSON(http.StatusOK, response)
 	}
 }
