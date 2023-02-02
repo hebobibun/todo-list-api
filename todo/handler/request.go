@@ -4,8 +4,8 @@ import "todo-api/todo"
 
 type TodoRequest struct {
 	Title           string `validate:"required" json:"title"`
-	Priority        string `json:"priority"`
-	ActivityGroupID uint   `json:"activity_group_id"`
+	IsActive        bool   `json:"is_active"`
+	ActivityGroupID uint   `validate:"required" json:"activity_group_id"`
 }
 
 type TodoUpdateRequest struct {
@@ -21,7 +21,7 @@ func ToCore(data interface{}) *todo.Core {
 	case TodoRequest:
 		cnv := data.(TodoRequest)
 		res.Title = cnv.Title
-		res.Priority = cnv.Priority
+		res.IsActive = cnv.IsActive
 		res.ActivityGroupID = cnv.ActivityGroupID
 	case TodoUpdateRequest:
 		cnv := data.(TodoUpdateRequest)
