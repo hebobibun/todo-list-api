@@ -2,13 +2,13 @@ package main
 
 import (
 	"log"
-	actD "todo-api/activity/data"
-	actH "todo-api/activity/handler"
-	actS "todo-api/activity/service"
 	"todo-api/config"
-	todoD "todo-api/todo/data"
-	todoH "todo-api/todo/handler"
-	todoS "todo-api/todo/service"
+	actD "todo-api/features/activity/data"
+	actH "todo-api/features/activity/handler"
+	actS "todo-api/features/activity/service"
+	todoD "todo-api/features/todo/data"
+	todoH "todo-api/features/todo/handler"
+	todoS "todo-api/features/todo/service"
 
 	"github.com/labstack/echo/v4"
 )

@@ -1,8 +1,8 @@
 package data
 
 import (
-	"todo-api/activity"
-	"todo-api/todo/data"
+	"todo-api/features/activity"
+	"todo-api/features/todo/data"
 
 	"gorm.io/gorm"
 )

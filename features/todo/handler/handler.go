@@ -5,26 +5,26 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
-	"todo-api/activity"
+	"todo-api/features/todo"
 	"todo-api/helper"
 
 	"github.com/go-playground/validator"
 	"github.com/labstack/echo/v4"
 )
 
-type actHandler struct {
-	srv activity.ActivityService
+type todoHandler struct {
+	srv todo.TodoService
 }
 
-func New(srv activity.ActivityService) activity.ActivityHandler {
-	return &actHandler{
+func New(srv todo.TodoService) todo.TodoHandler {
+	return &todoHandler{
 		srv: srv,
 	}
 }
 
-func (h *actHandler) Create() echo.HandlerFunc {
+func (h *todoHandler) Create() echo.HandlerFunc {
 	return func(c echo.Context) error {
-		input := ActivityRequest{}
+		input := TodoRequest{}
 		if err := c.Bind(&input); err != nil {
 			response := helper.APIResponseNoData("Bad Request", "Bad Request")
 			return c.JSON(http.StatusBadRequest, response)
@@ -36,8 +36,8 @@ func (h *actHandler) Create() echo.HandlerFunc {
 			fmt.Println(err.Error())
 			if strings.Contains(err.Error(), "Title") {
 				msg = "title cannot be null"
-			} else if strings.Contains(err.Error(), "Email") {
-				msg = "email cannot be null"
+			} else if strings.Contains(err.Error(), "Activity") {
+				msg = "activity_group_id cannot be null"
 			} else {
 				msg = "request body cannot be null"
 			}
@@ -57,17 +57,17 @@ func (h *actHandler) Create() echo.HandlerFunc {
 	}
 }
 
-func (h *actHandler) GetOne() echo.HandlerFunc {
+func (h *todoHandler) GetOne() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		id, err := strconv.Atoi(c.Param("id"))
 		if err != nil {
 			response := helper.APIResponseNoData("Error", "Error")
-			return c.JSON(http.StatusBadRequest, response)
+			return c.JSON(http.StatusNotFound, response)
 		}
 
 		res, err := h.srv.GetOne(uint(id))
 		if err != nil {
-			msg := fmt.Sprintf("Activity with ID %d Not Found", id)
+			msg := fmt.Sprintf("Todo with ID %d Not Found", id)
 			response := helper.APIResponseNoData("Not Found", msg)
 			return c.JSON(http.StatusNotFound, response)
 		}
@@ -77,9 +77,23 @@ func (h *actHandler) GetOne() echo.HandlerFunc {
 	}
 }
 
-func (h *actHandler) GetAll() echo.HandlerFunc {
+func (h *todoHandler) GetAll() echo.HandlerFunc {
 	return func(c echo.Context) error {
-		res, err := h.srv.GetAll()
+		actGroupID := c.QueryParam("activity_group_id")
+
+		actID := 0
+
+		if actGroupID != "" {
+			id, err := strconv.Atoi(actGroupID)
+			if err != nil {
+				response := helper.APIResponseNoData("Bad Request", "Bad Request")
+				return c.JSON(http.StatusBadRequest, response)
+			}
+
+			actID = id
+		}
+
+		res, err := h.srv.GetAll(uint(actID))
 		if err != nil {
 			response := helper.APIResponseNoData("Error", "Error")
 			return c.JSON(http.StatusInternalServerError, response)
@@ -90,7 +104,34 @@ func (h *actHandler) GetAll() echo.HandlerFunc {
 	}
 }
 
-func (h *actHandler) Delete() echo.HandlerFunc {
+func (h *todoHandler) Update() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		id, err := strconv.Atoi(c.Param("id"))
+		if err != nil {
+			response := helper.APIResponseNoData("Error", "Error")
+			return c.JSON(http.StatusBadRequest, response)
+		}
+
+		input := TodoUpdateRequest{}
+
+		if err := c.Bind(&input); err != nil {
+			response := helper.APIResponseNoData("Bad Request", "Bad request")
+			return c.JSON(http.StatusBadRequest, response)
+		}
+
+		res, err := h.srv.Update(uint(id), *ToCore(input))
+		if err != nil {
+			msg := fmt.Sprintf("Todo with ID %d Not Found", id)
+			response := helper.APIResponseNoData("Not Found", msg)
+			return c.JSON(http.StatusNotFound, response)
+		}
+
+		response := helper.APIResponse("Success", "Success", ToResponse(res))
+		return c.JSON(http.StatusOK, response)
+	}
+}
+
+func (h *todoHandler) Delete() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		id, err := strconv.Atoi(c.Param("id"))
 		if err != nil {
@@ -100,45 +141,12 @@ func (h *actHandler) Delete() echo.HandlerFunc {
 
 		err = h.srv.Delete(uint(id))
 		if err != nil {
-			msg := fmt.Sprintf("Activity with ID %d Not Found", id)
+			msg := fmt.Sprintf("Todo with ID %d Not Found", id)
 			response := helper.APIResponseNoData("Not Found", msg)
 			return c.JSON(http.StatusNotFound, response)
 		}
 
 		response := helper.APIResponse("Success", "Success", helper.NoData{})
-		return c.JSON(http.StatusOK, response)
-	}
-}
-
-func (h *actHandler) Update() echo.HandlerFunc {
-	return func(c echo.Context) error {
-		id, err := strconv.Atoi(c.Param("id"))
-		if err != nil {
-			response := helper.APIResponseNoData("Error", "Error")
-			return c.JSON(http.StatusNotFound, response)
-		}
-
-		input := UpdateRequest{}
-
-		if err := c.Bind(&input); err != nil {
-			response := helper.APIResponseNoData("Bad Request", "Bad request")
-			return c.JSON(http.StatusBadRequest, response)
-		}
-
-		validate := validator.New()
-		if err := validate.Struct(input); err != nil {
-			response := helper.APIResponseNoData("Bad Request", "title cannot be null")
-			return c.JSON(http.StatusBadRequest, response)
-		}
-
-		res, err := h.srv.Update(uint(id), *ToCore(input))
-		if err != nil {
-			msg := fmt.Sprintf("Activity with ID %d Not Found", id)
-			response := helper.APIResponseNoData("Not Found", msg)
-			return c.JSON(http.StatusNotFound, response)
-		}
-
-		response := helper.APIResponse("Success", "Success", ToResponse(res))
 		return c.JSON(http.StatusOK, response)
 	}
 }

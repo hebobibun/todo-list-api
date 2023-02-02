@@ -2,7 +2,7 @@ package handler
 
 import (
 	"time"
-	"todo-api/todo"
+	"todo-api/features/todo"
 )
 
 type TodoResponse struct {
