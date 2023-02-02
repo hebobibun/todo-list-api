@@ -71,3 +71,23 @@ func (h *acthandler) GetAll() echo.HandlerFunc {
 		return c.JSON(http.StatusOK, response)
 	}
 }
+
+func (h *acthandler) Delete() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		id, err := strconv.Atoi(c.Param("id"))
+		if err != nil {
+			response := helper.APIResponse("Error", "Error", nil)
+			return c.JSON(http.StatusNotFound, response)
+		}
+
+		err = h.srv.Delete(uint(id))
+		if err != nil {
+			msg := fmt.Sprintf("Activity with ID %d Not Found", id)
+			response := helper.APIResponse("Not found", msg, nil)
+			return c.JSON(http.StatusInternalServerError, response)
+		}
+
+		response := helper.APIResponse("Success", "Success", nil)
+		return c.JSON(http.StatusOK, response)
+	}
+}

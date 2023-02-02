@@ -1,6 +1,8 @@
 package service
 
 import (
+	"errors"
+	"strings"
 	"todo-api/activity"
 	"todo-api/helper"
 
@@ -49,4 +51,23 @@ func (s *actService) GetAll() ([]activity.Core, error) {
 	}
 
 	return res, nil
+}
+
+func (s *actService) Delete(id uint) error {
+	err := s.qry.Delete(id)
+	if err != nil {
+		return err
+	}
+
+	if err != nil {
+		msg := ""
+		if strings.Contains(err.Error(), "not found") {
+			msg = "Data not found"
+		} else {
+			msg = "There is a problem with the server"
+		}
+		return errors.New(msg)
+	}
+
+	return nil
 }
