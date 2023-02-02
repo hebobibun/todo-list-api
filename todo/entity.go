@@ -1,6 +1,10 @@
 package todo
 
-import "time"
+import (
+	"time"
+
+	"github.com/labstack/echo/v4"
+)
 
 type Core struct {
 	ID              uint
@@ -12,6 +16,13 @@ type Core struct {
 	UpdatedAt       time.Time
 }
 
-type TodoHandler interface{}
-type TodoService interface{}
-type TodoData interface{}
+type TodoHandler interface {
+	Create() echo.HandlerFunc
+}
+type TodoService interface {
+	Create(newTodo Core) (Core, error)
+}
+
+type TodoData interface {
+	Create(newTodo Core) (Core, error)
+}

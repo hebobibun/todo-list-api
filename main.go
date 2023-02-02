@@ -2,10 +2,13 @@ package main
 
 import (
 	"log"
-	"todo-api/activity/data"
-	"todo-api/activity/handler"
-	"todo-api/activity/service"
+	actD "todo-api/activity/data"
+	actH "todo-api/activity/handler"
+	actS "todo-api/activity/service"
 	"todo-api/config"
+	todoD "todo-api/todo/data"
+	todoH "todo-api/todo/handler"
+	todoS "todo-api/todo/service"
 
 	"github.com/labstack/echo/v4"
 )
@@ -16,9 +19,13 @@ func main() {
 	db := config.InitDB(*cfg)
 	config.Migrate(db)
 
-	actData := data.New(db)
-	actSrv := service.New(actData)
-	actHdl := handler.New(actSrv)
+	actData := actD.New(db)
+	actSrv := actS.New(actData)
+	actHdl := actH.New(actSrv)
+
+	todoData := todoD.New(db)
+	todoSrv := todoS.New(todoData)
+	todoHdl := todoH.New(todoSrv)
 
 	act := e.Group("/activity-groups")
 
@@ -27,6 +34,10 @@ func main() {
 	act.GET("/:id", actHdl.GetOne())
 	act.PATCH("/:id", actHdl.Update())
 	act.DELETE("/:id", actHdl.Delete())
+
+	todo := e.Group("/todo-items")
+
+	todo.POST("", todoHdl.Create())
 
 	if err := e.Start(":3030"); err != nil {
 		log.Println(err.Error())

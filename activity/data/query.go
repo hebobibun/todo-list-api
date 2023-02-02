@@ -28,6 +28,9 @@ func (q *activityQuery) Create(newActivity activity.Core) (activity.Core, error)
 		return newActivity, err
 	}
 
+	fmt.Println(activity)
+	fmt.Println(ToCores(activity))
+
 	return ToCores(activity), nil
 }
 

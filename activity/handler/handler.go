@@ -12,17 +12,17 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-type acthandler struct {
+type actHandler struct {
 	srv activity.ActivityService
 }
 
 func New(srv activity.ActivityService) activity.ActivityHandler {
-	return &acthandler{
+	return &actHandler{
 		srv: srv,
 	}
 }
 
-func (h *acthandler) Create() echo.HandlerFunc {
+func (h *actHandler) Create() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		input := ActivityRequest{}
 		if err := c.Bind(&input); err != nil {
@@ -38,6 +38,8 @@ func (h *acthandler) Create() echo.HandlerFunc {
 				msg = "title cannot be null"
 			} else if strings.Contains(err.Error(), "Email") {
 				msg = "email cannot be null"
+			} else {
+				msg = "request body cannot be null"
 			}
 
 			response := helper.APIResponseNoData("Bad Request", msg)
@@ -55,7 +57,7 @@ func (h *acthandler) Create() echo.HandlerFunc {
 	}
 }
 
-func (h *acthandler) GetOne() echo.HandlerFunc {
+func (h *actHandler) GetOne() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		id, err := strconv.Atoi(c.Param("id"))
 		if err != nil {
@@ -75,7 +77,7 @@ func (h *acthandler) GetOne() echo.HandlerFunc {
 	}
 }
 
-func (h *acthandler) GetAll() echo.HandlerFunc {
+func (h *actHandler) GetAll() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		res, err := h.srv.GetAll()
 		if err != nil {
@@ -88,7 +90,7 @@ func (h *acthandler) GetAll() echo.HandlerFunc {
 	}
 }
 
-func (h *acthandler) Delete() echo.HandlerFunc {
+func (h *actHandler) Delete() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		id, err := strconv.Atoi(c.Param("id"))
 		if err != nil {
@@ -108,7 +110,7 @@ func (h *acthandler) Delete() echo.HandlerFunc {
 	}
 }
 
-func (h *acthandler) Update() echo.HandlerFunc {
+func (h *actHandler) Update() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		id, err := strconv.Atoi(c.Param("id"))
 		if err != nil {
