@@ -101,7 +101,7 @@ func (h *actHandler) Delete() echo.HandlerFunc {
 		err = h.srv.Delete(uint(id))
 		if err != nil {
 			msg := fmt.Sprintf("Activity with ID %d Not Found", id)
-			response := helper.APIResponseNoData("Not found", msg)
+			response := helper.APIResponseNoData("Not Found", msg)
 			return c.JSON(http.StatusNotFound, response)
 		}
 
