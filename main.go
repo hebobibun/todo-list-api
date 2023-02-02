@@ -39,6 +39,7 @@ func main() {
 
 	todo.POST("", todoHdl.Create())
 	todo.GET("/:id", todoHdl.GetOne())
+	todo.GET("", todoHdl.GetAll())
 	todo.PATCH("/:id", todoHdl.Update())
 	todo.DELETE("/:id", todoHdl.Delete())
 

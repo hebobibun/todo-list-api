@@ -28,9 +28,6 @@ func (q *todoQuery) Create(newTodo todo.Core) (todo.Core, error) {
 		return newTodo, err
 	}
 
-	fmt.Println(todo)
-	fmt.Println(ToCores(todo))
-
 	return ToCores(todo), nil
 }
 
@@ -44,6 +41,26 @@ func (q *todoQuery) GetOne(id uint) (todo.Core, error) {
 	}
 
 	return ToCores(act), nil
+}
+
+func (q *todoQuery) GetAll(actID uint) ([]todo.Core, error) {
+	allTodo := []Todo{}
+
+	if actID <= 0 {
+		err := q.db.Find(&allTodo).Error
+		if err != nil {
+			log.Println("Query get All activities error : ", err.Error())
+			return []todo.Core{}, err
+		}
+	} else {
+		err := q.db.Where("activity_group_id = ?", actID).Find(&allTodo).Error
+		if err != nil {
+			log.Println("Query get All todo error : ", err.Error())
+			return []todo.Core{}, err
+		}
+	}
+
+	return ToCoreArr(allTodo), nil
 }
 
 func (q *todoQuery) Update(id uint, updatedTodo todo.Core) (todo.Core, error) {
