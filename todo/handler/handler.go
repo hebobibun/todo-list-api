@@ -77,6 +77,33 @@ func (h *todoHandler) GetOne() echo.HandlerFunc {
 	}
 }
 
+func (h *todoHandler) GetAll() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		actGroupID := c.QueryParam("activity_group_id")
+
+		actID := 0
+
+		if actGroupID != "" {
+			id, err := strconv.Atoi(actGroupID)
+			if err != nil {
+				response := helper.APIResponseNoData("Bad Request", "Bad Request")
+				return c.JSON(http.StatusNotFound, response)
+			}
+
+			actID = id
+		}
+
+		res, err := h.srv.GetAll(uint(actID))
+		if err != nil {
+			response := helper.APIResponseNoData("Error", "Error")
+			return c.JSON(http.StatusInternalServerError, response)
+		}
+
+		response := helper.APIResponse("Success", "Success", ToResponseArr(res))
+		return c.JSON(http.StatusOK, response)
+	}
+}
+
 func (h *todoHandler) Update() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		id, err := strconv.Atoi(c.Param("id"))
