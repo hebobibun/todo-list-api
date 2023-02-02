@@ -1,8 +1,6 @@
 package service
 
 import (
-	"errors"
-	"strings"
 	"todo-api/activity"
 	"todo-api/helper"
 
@@ -59,15 +57,14 @@ func (s *actService) Delete(id uint) error {
 		return err
 	}
 
+	return nil
+}
+
+func (s *actService) Update(id uint, updatedActivity activity.Core) (activity.Core, error) {
+	res, err := s.qry.Update(id, updatedActivity)
 	if err != nil {
-		msg := ""
-		if strings.Contains(err.Error(), "not found") {
-			msg = "Data not found"
-		} else {
-			msg = "There is a problem with the server"
-		}
-		return errors.New(msg)
+		return updatedActivity, err
 	}
 
-	return nil
+	return res, nil
 }

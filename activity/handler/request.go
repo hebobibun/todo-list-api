@@ -7,6 +7,10 @@ type ActivityRequest struct {
 	Email string `validate:"required" json:"email"`
 }
 
+type UpdateRequest struct {
+	Title string `validate:"required" json:"title"`
+}
+
 func ToCore(data interface{}) *activity.Core {
 	res := activity.Core{}
 
@@ -15,6 +19,9 @@ func ToCore(data interface{}) *activity.Core {
 		cnv := data.(ActivityRequest)
 		res.Title = cnv.Title
 		res.Email = cnv.Email
+	case UpdateRequest:
+		cnv := data.(UpdateRequest)
+		res.Title = cnv.Title
 	default:
 		return nil
 	}

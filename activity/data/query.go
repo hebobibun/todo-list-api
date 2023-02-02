@@ -68,3 +68,27 @@ func (q *activityQuery) Delete(id uint) error {
 
 	return nil
 }
+
+func (q *activityQuery) Update(id uint, updatedActivity activity.Core) (activity.Core, error) {
+	cnvUpdated := CoreToData(updatedActivity)
+	qry := q.db.Model(Activity{}).Where("id = ?", id).Updates(&cnvUpdated)
+	err := qry.Error
+
+	affRow := qry.RowsAffected
+
+	if affRow <= 0 {
+		log.Println("No rows affected")
+		msg := fmt.Sprintf("Activity with ID %d Not Found", id)
+		return activity.Core{}, errors.New(msg)
+	}
+
+	if err != nil {
+		log.Println("Query update activity by ID error : ", err.Error())
+		return activity.Core{}, errors.New("Error")
+	}
+
+	var updatedRow Activity
+	q.db.First(&updatedRow, "id = ?", id)
+
+	return ToCores(updatedRow), nil
+}

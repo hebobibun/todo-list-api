@@ -14,11 +14,25 @@ type Response struct {
 	Data    interface{} `json:"data"`
 }
 
+type ResponseNoData struct {
+	Status  string `json:"status"`
+	Message string `json:"message"`
+}
+
 func APIResponse(status string, message string, data interface{}) Response {
 	res := Response{
 		Message: message,
 		Status:  status,
 		Data:    data,
+	}
+
+	return res
+}
+
+func APIResponseNoData(status string, message string) ResponseNoData {
+	res := ResponseNoData{
+		Message: message,
+		Status:  status,
 	}
 
 	return res
@@ -36,7 +50,7 @@ func Validation(data interface{}) error {
 		}
 		msg := ""
 		if strings.Contains(err.Error(), "required") {
-			msg = "title/email cannot be null"
+			msg = "Body request cannot be blank"
 		} else if strings.Contains(err.Error(), "title") {
 			msg = "title cannot be null"
 		} else if strings.Contains(err.Error(), "email") {
