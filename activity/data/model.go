@@ -2,6 +2,7 @@ package data
 
 import (
 	"todo-api/activity"
+	"todo-api/todo/data"
 
 	"gorm.io/gorm"
 )
@@ -10,6 +11,7 @@ type Activity struct {
 	gorm.Model
 	Title string
 	Email string
+	Todo  []data.Todo `gorm:"foreignkey:ActivityGroupID"`
 }
 
 func CoreToData(data activity.Core) Activity {
